@@ -18,7 +18,7 @@ function deepCopy(target, child) {
           deepCopy.cached.push(i);
           deepCopy(target, child);
         } else {
-          throw error('Object contains cycle reference');
+          throw new Error('Object contains cycle reference');
         }
       } else {
         child[i] = target[i];
@@ -44,11 +44,7 @@ function Scope() {
   this.$$phase = null;
 }
 
-// 处理 watchFn 返回 undefined 的情况
-// function 按引用比较
-//
-// Note: 酱紫的话，我觉得 object 也可以哦
-function initWatchVal() {};
+function initWatchVal() {}
 
 Scope.prototype.$watch = function(watchFn, listenerFn, isDeep) {
   var self = this;
@@ -92,7 +88,7 @@ Scope.prototype.$digest = function() {
       try {
         task.scope.$eval(task.expression);
       } catch(e) {
-        console.error(e);
+        throw new Error(e);
       }
     }
 
@@ -110,7 +106,7 @@ Scope.prototype.$digest = function() {
     try {
       this.$$postDigestQueue.shift()();
     } catch(e) {
-      console.error(e);
+      throw new Error(e);
     }
   }
 };
@@ -129,7 +125,7 @@ Scope.prototype.$$digestOnce = function() {
         self.$$lastDirtyWatch = watcher;
         watcher.last = (isDeep ? deepCopy(newValue) : newValue);
         // 初始化时，newValue 应当也是 oldValue
-        watcher.listenerFn(newValue, 
+        watcher.listenerFn(newValue,
           oldValue === initWatchVal ? newValue : oldValue,
           self);
 
@@ -139,7 +135,7 @@ Scope.prototype.$$digestOnce = function() {
         isLast = true;
       }
     } catch(e) {
-      console.error(e);
+      throw new Error(e);
     }
 
     return isLast;
@@ -169,7 +165,7 @@ Scope.prototype.$evalAsync = function(func) {
 Scope.prototype.$apply = function(func) {
   try {
     this.$$beginPhase('$apply');
-    return this.$eval(func)
+    return this.$eval(func);
   } finally {
     this.$$clearPhase();
     this.$digest();
@@ -196,7 +192,7 @@ Scope.prototype.$$flushApplyAsync = function() {
     try {
       this.$$applyAsyncQueue.shift()();
     } catch(e) {
-      console.error(e);
+      throw new Error(e);
     }
   }
 
@@ -205,7 +201,7 @@ Scope.prototype.$$flushApplyAsync = function() {
 
 Scope.prototype.$$postDigest = function(func) {
   this.$$postDigestQueue.push(func);
-}
+};
 
 Scope.prototype.$$areEqual = function(newValue, oldValue, isDeep) {
   var result = true;
@@ -224,7 +220,7 @@ Scope.prototype.$$areEqual = function(newValue, oldValue, isDeep) {
       }
     }
   } else {
-    result = (newValue === oldValue || 
+    result = (newValue === oldValue ||
       (typeof newValue === 'number' && typeof oldValue === 'number' && isNaN(newValue) && isNaN(oldValue))
     );
   }
@@ -243,5 +239,3 @@ Scope.prototype.$$beginPhase = function(phase) {
 Scope.prototype.$$clearPhase = function() {
   this.$$phase = null;
 };
-
-module.exports = Scope;
