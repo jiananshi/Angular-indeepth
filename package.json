@@ -1,0 +1,26 @@
+{
+  "name": "angularbaby",
+  "version": "0.0.1",
+  "description": "Angular 源码分析",
+  "main": "scope.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/klamtlne/Angularbaby.git"
+  },
+  "author": "klamtine",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/klamtlne/Angularbaby/issues"
+  },
+  "homepage": "https://github.com/klamtlne/Angularbaby#readme",
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "mocha": "^2.3.4"
+  }
+}
