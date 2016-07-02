@@ -1,8 +1,3 @@
-/**
- * Scope
- *
- */
-
 'use strict';
 
 function deepCopy(target, child) {
@@ -14,7 +9,7 @@ function deepCopy(target, child) {
       var type = Object.prototype.toString.call(i);
 
       if (type === '[object Array]' || type === '[object Object]') {
-        if (deepCopy.cached.indexOf(i) === -1) {
+        if (!~deepCopy.cached.indexOf(i)) {
           deepCopy.cached.push(i);
           deepCopy(target, child);
         } else {
@@ -113,7 +108,11 @@ Scope.prototype.$digest = function() {
 
 Scope.prototype.$$digestOnce = function() {
   var self = this;
-  var newValue, oldValue, dirty, isLast, isDeep;
+  var newValue
+    , oldValue
+    , dirty
+    , isLast
+    , isDeep;
 
   this.$$watchers.someRight(function(watcher) {
     try {
@@ -239,3 +238,4 @@ Scope.prototype.$$beginPhase = function(phase) {
 Scope.prototype.$$clearPhase = function() {
   this.$$phase = null;
 };
+
