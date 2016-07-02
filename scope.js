@@ -40,12 +40,13 @@ function Scope() {
 }
 
 function initWatchVal() {}
+function noop() {}
 
 Scope.prototype.$watch = function(watchFn, listenerFn, isDeep) {
   var self = this;
   var watcher = {
     watchFn: watchFn,
-    listenerFn: listenerFn || function() {},
+    listenerFn: listenerFn || noop,
     last: initWatchVal,
     isDeep: !!isDeep
   };
@@ -238,4 +239,6 @@ Scope.prototype.$$beginPhase = function(phase) {
 Scope.prototype.$$clearPhase = function() {
   this.$$phase = null;
 };
+
+module.exports = Scope;
 
